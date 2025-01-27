@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Movie - MoviesHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Add smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Hide scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1F2937;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #FBBF24;
+            border-radius: 4px;
+        }
+
+        /* Add new styles */
+        #pageBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 3;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2;
+        }
+
+        .interactive-element {
+            position: relative;
+            z-index: 3;
+        }
+
+        .interactive-section {
+            position: relative;
+            z-index: 10;
+        }
+
+        .clickable {
+            position: relative;
+            z-index: 20;
+        }
+
+        #downloadGuide {
+            z-index: 30;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Background container -->
+    <div id="pageBackground"></div>
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper flex flex-col min-h-screen relative z-3">
+        <!-- Header -->
+        <header class="bg-gray-800/90 backdrop-blur-sm p-2 sm:p-4 shadow-md sticky top-0 z-50">
+            <div class="container mx-auto flex items-center justify-between">
+                <a href="index.html" class="text-xl sm:text-2xl font-bold text-yellow-400">MoviesHub</a>
+                <a href="index.html" class="text-sm text-gray-300 hover:text-yellow-400">
+                    <i class="fas fa-home mr-1"></i> Back to Home
+                </a>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="flex-grow">
+            <!-- Movie Details Section -->
+            <div id="movieDetails" class="container mx-auto px-4 py-8 relative z-10">
+                <!-- Movie details will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Screenshots Section -->
+            <div id="screenshotsSection" class="container mx-auto px-4 interactive-section">
+                <!-- Screenshots will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Download Section -->
+            <div class="container mx-auto px-4 py-8 interactive-section">
+                <div class="bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-yellow-400">Download Options</h2>
+                            <p class="text-sm text-gray-400 mt-1">Choose your preferred quality and server</p>
+                        </div>
+                        <button onclick="showDownloadGuide()" 
+                                class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                            <i class="fas fa-question-circle mr-2"></i>How to Download?
+                        </button>
+                    </div>
+
+                    <div id="downloadButtons" class="mb-6 clickable">
+                        <!-- Download buttons will be inserted here -->
+                    </div>
+                    <div id="downloadLinks" class="text-gray-300 clickable">
+                        <!-- Download links will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trailer Section - Moved here -->
+            <div id="trailerSection" class="container mx-auto px-4 py-8 interactive-section">
+                <!-- Trailer will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Similar Movies Section will be inserted here by JavaScript -->
+        </main>
+
+        <!-- Movie Background Showcase -->
+        <div class="w-full h-[400px] relative -mt-4 bg-fixed bg-cover bg-center" id="movieBackgroundShowcase">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800/90 backdrop-blur-sm p-4">
+            <div class="container mx-auto text-center">
+                <p>&copy; 2025 MoviesHub. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Black overlay moved to bottom -->
+    <div class="overlay fixed inset-0 z-2 pointer-events-none"></div>
+
+    <!-- Download Guide Modal -->
+    <div id="downloadGuide" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[60]">
+        <div class="bg-gray-800/95 backdrop-blur-sm p-6 rounded-lg max-w-4xl w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-yellow-400">How to Download - Video Guide</h3>
+                <button onclick="hideDownloadGuide()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="aspect-video">
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/YOUR_VIDEO_ID" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    class="rounded-lg"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="downloadPage.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Sports - MoviesHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .live-indicator {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1F2937;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #FBBF24;
+            border-radius: 4px;
+        }
+    </style>
+    <!-- Add HLS.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-800 p-2 sm:p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex items-center justify-between px-2">
+            <a href="index.html" class="text-xl sm:text-2xl font-bold text-yellow-400">MoviesHub</a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="hover:text-yellow-400">Movies</a>
+                <a href="#" class="hover:text-yellow-400">Web Series</a>
+                <a href="#" class="text-yellow-400">Live Sports</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Featured Match -->
+        <div id="featured-match" class="mb-8">
+            <div class="bg-gray-800 rounded-lg overflow-hidden">
+                <div class="aspect-video relative">
+                    <div class="absolute inset-0">
+                        <iframe id="stream-player"
+                                class="w-full h-full"
+                                src="https://webplayer-live.pages.dev/?url=https://amg01269-amg01269c1-willowtv-us-5479.playouts.now.amagi.tv/playlist/amg01269-willowtvfast-willowplus-willowtvus/playlist.m3u8"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen
+                                style="border: none; overflow: hidden;"
+                                scrolling="no">
+                        </iframe>
+                    </div>
+                    <!-- Live Indicator -->
+                    <div class="absolute top-4 left-4 z-10">
+                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center">
+                            <span class="w-2 h-2 bg-white rounded-full mr-2 live-indicator"></span>
+                            LIVE
+                        </span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h2 id="match-title" class="text-xl font-bold mb-2">
+                        <!-- Match title will be inserted here by JavaScript -->
+                    </h2>
+                    <div id="match-details" class="mb-3">
+                        <!-- Match details will be inserted here by JavaScript -->
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-yellow-400"><i class="fas fa-users"></i></span>
+                            <span id="viewer-count">0</span> watching
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cricket Scoreboard -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Live Cricket</h2>
+            <div id="cricket-scoreboard" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Cricket scores will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 p-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 MoviesHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="liveMatch.js"></script>
+</body>
+</html>

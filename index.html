@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="main.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    /* Add smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Hide scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1F2937;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #FBBF24;
+            border-radius: 4px;
+        }
+  </style>
+
+</head>
+<body class="bg-gray-900 text-white">
+  <!-- Updated Navbar -->
+  <header class="bg-gray-800 p-2 sm:p-4 shadow-md sticky top-0 z-50">
+    <div class="container mx-auto flex flex-col sm:flex-row items-center gap-4 px-2">
+        <div class="flex items-center justify-between w-full sm:w-auto">
+            <h1 class="text-xl sm:text-2xl font-bold text-yellow-400">MoviesHub</h1>
+            <button id="menu-btn" class="md:hidden text-white hover:text-yellow-400">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Search Bar in Navbar -->
+        <div class="relative w-full sm:w-96">
+            <input type="search" 
+                   id="nav-search"
+                   placeholder="Search movies..."
+                   class="w-full px-3 py-1.5 text-sm bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav id="nav-menu" class="hidden md:block w-full md:w-auto">
+            <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+                <li><a href="#movies" class="block hover:text-yellow-400">Movies</a></li>
+                <li><a href="#web-series" class="block hover:text-yellow-400">Web Series</a></li>
+                <li><a href="#tv-shows" class="block hover:text-yellow-400">TV Shows</a></li>
+                <li><a href="/liveMatch.html" class="block hover:text-yellow-400">Live Sports</a></li>
+            </ul>
+        </nav>
+    </div>
+  </header>
+
+  <!-- Carousel Section -->
+  <section id="carousel" class="w-full mb-6">
+    <!-- Carousel content will be inserted here -->
+  </section>
+
+  <!-- Content Type Switcher -->
+  <div class="container mx-auto px-2 py-4">
+    <div class="flex justify-center gap-4 mb-6">
+      <button class="content-type-btn px-8 py-3 bg-yellow-400 text-black rounded-lg font-semibold"
+              data-type="movie"
+              onclick="switchContentType('movie')">
+        Movies
+      </button>
+      <button class="content-type-btn px-8 py-3 bg-gray-700 text-white rounded-lg font-semibold"
+              data-type="tv"
+              onclick="switchContentType('tv')">
+        TV Shows
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Filters Section -->
+  <section class="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+    <!-- Search Bar -->
+    <div class="mb-4 sm:mb-6">
+      <div class="relative max-w-xl mx-auto">
+        <input type="search" 
+               id="search-input"
+               placeholder="Search movies..."
+               class="w-full px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+      </div>
+    </div>
+
+    <!-- Language Selection - Updated for better mobile view -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button class="language-btn px-4 py-2 bg-yellow-400 text-black rounded-lg" 
+              data-lang="en"
+              onclick="changeLanguage('en')">English</button>
+      <button class="language-btn px-4 py-2 bg-gray-700 rounded-lg" 
+              data-lang="es"
+              onclick="changeLanguage('es')">Español</button>
+      <button class="language-btn px-4 py-2 bg-gray-700 rounded-lg" 
+              data-lang="fr"
+              onclick="changeLanguage('fr')">Français</button>
+      <button class="language-btn px-4 py-2 bg-gray-700 rounded-lg" 
+              data-lang="hi"
+              onclick="changeLanguage('hi')">हिंदी</button>
+    </div>
+
+    <!-- Industry Filter Section -->
+    <section class="container mx-auto px-2 sm:px-4 py-4">
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button class="industry-btn px-6 py-2 bg-yellow-400 text-black rounded-lg" 
+                    data-industry="all"
+                    onclick="filterByIndustry('all')">
+                All Movies
+            </button>
+            <button class="industry-btn px-6 py-2 bg-gray-700 rounded-lg" 
+                    data-industry="hollywood"
+                    onclick="filterByIndustry('hollywood')">
+                <span class="mr-1">🌟</span> Hollywood
+            </button>
+            <button class="industry-btn px-6 py-2 bg-gray-700 rounded-lg" 
+                    data-industry="bollywood"
+                    onclick="filterByIndustry('bollywood')">
+                <span class="mr-1">🇮🇳</span> Bollywood
+            </button>
+            <button class="industry-btn px-6 py-2 bg-gray-700 rounded-lg" 
+                    data-industry="south"
+                    onclick="filterByIndustry('south')">
+                <span class="mr-1">🎬</span> South Indian
+            </button>
+        </div>
+    </section>
+
+    <!-- Dynamic Category Buttons -->
+    <div class="category-buttons flex flex-wrap gap-2 mb-6">
+      <!-- Category buttons will be inserted here -->
+    </div>
+
+    <!-- Genres -->
+    <div id="genres-container" class="flex flex-wrap gap-2 mb-6">
+      <!-- Genres will be inserted here -->
+    </div>
+  </section>
+
+  <!-- Content Grid -->
+  <section class="container mx-auto px-2 py-6">
+    <div id="content-grid" class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4">
+      <!-- Content will be inserted here -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 p-4">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 MoviesHub. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
