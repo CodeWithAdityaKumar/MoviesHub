@@ -28,7 +28,7 @@ async function fetchLatestPosts() {
         const imdb = content.match(/imdb-rating: (.*?)/)?.[1];
         const imdbId = content.match(/imdb-id: (.*?)/)?.[1];
         
-        console.log(image, title, link, imdb, imdbId);
+        console.log(image, title, link, imdb, imdbId, content);
         
 
 
