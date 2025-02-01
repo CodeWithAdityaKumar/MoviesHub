@@ -23,9 +23,12 @@ async function fetchLatestPosts() {
       const content = post.content.$t;
       const image =
         content.match(/<img.*?src="(.*?)"/)?.[1] ||
-            "https://via.placeholder.com/800x400"; // Extract first image
+            "https://via.placeholder.com/800x400";
         
-        console.log(image, title, link, content);
+        const imdb = content.match(/imdb-rating: (.*?)/)?.[1];
+        const imdbId = content.match(/imdb-id: (.*?)/)?.[1];
+        
+        console.log(image, title, link, imdb, imdbId);
         
 
 
