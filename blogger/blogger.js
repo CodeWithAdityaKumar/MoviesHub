@@ -23,7 +23,10 @@ async function fetchLatestPosts() {
       const content = post.content.$t;
       const image =
         content.match(/<img.*?src="(.*?)"/)?.[1] ||
-        "https://via.placeholder.com/800x400"; // Extract first image
+            "https://via.placeholder.com/800x400"; // Extract first image
+        
+        console.log(image, title, link, content);
+        
 
       // Add slide
       carouselInner.innerHTML += `
