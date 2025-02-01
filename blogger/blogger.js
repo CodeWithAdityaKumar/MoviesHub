@@ -10,11 +10,22 @@ async function fetchLatestPosts() {
 
     if (!posts) return;
 
-    let carouselInner = document.getElementById("carousel-inner");
-    let indicators = document.getElementById("carousel-indicators");
-
-    carouselInner.innerHTML = "";
-    indicators.innerHTML = "";
+    const carouselContainer = document.getElementById('carousel');
+        
+    if (!posts || posts.length === 0) {
+        console.error('No posts found');
+        return;
+    }
+    
+    const carouselInner = document.createElement('div');
+    carouselContainer.innerHTML = `
+        <div class="relative w-full overflow-hidden">
+            <div class="flex transition-transform duration-500" style="width: ${posts.length * 100}%">
+            </div>
+        </div>`;
+    
+    const indicators = document.createElement('div');
+    carouselContainer.appendChild(indicators);
 
     posts.forEach(async (post, index) => {
       const title = post.title.$t;
@@ -117,37 +128,44 @@ async function fetchLatestPosts() {
     console.error("Error fetching posts:", error);
   }
 }
-
-fetchLatestPosts();
-
-let currentIndex = 0;
+let currentSlide = 0;
+let carouselInterval;
 
 function moveCarousel(direction) {
-  const slides = document.querySelectorAll("#carousel-inner > div");
-  const totalSlides = slides.length;
-
-  currentIndex += direction;
-  if (currentIndex < 0) currentIndex = totalSlides - 1;
-  if (currentIndex >= totalSlides) currentIndex = 0;
-
-  updateCarousel();
+    const slideContainer = document.querySelector('#carousel .flex');
+    const slides = document.querySelectorAll('[id^="slide-"]');
+    if (!slides.length) return;
+    
+    currentSlide = (currentSlide + direction + slides.length) % slides.length;
+    
+    // Move all slides together
+    slideContainer.style.transform = `translateX(${-100 * currentSlide / slides.length}%)`;
+    
+    // Update indicators
+    document.querySelectorAll('.bottom-4 button').forEach((btn, index) => {
+        btn.classList.toggle('bg-yellow-400', index === currentSlide);
+    });
 }
 
-function moveToSlide(index) {
-  currentIndex = index;
-  updateCarousel();
+function moveToSlide(slideIndex) {
+    const slideContainer = document.querySelector('#carousel .flex');
+    const slides = document.querySelectorAll('[id^="slide-"]');
+    if (!slides.length) return;
+
+    currentSlide = slideIndex;
+    slideContainer.style.transform = `translateX(${-100 * currentSlide / slides.length}%)`;
+    
+    // Update indicators
+    document.querySelectorAll('.bottom-4 button').forEach((btn, index) => {
+        btn.classList.toggle('bg-yellow-400', index === currentSlide);
+    });
 }
+// Start the carousel when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    fetchLatestPosts();
+    startCarousel();
+});
 
-function updateCarousel() {
-  const slides = document.getElementById("carousel-inner");
-  const indicators = document.querySelectorAll("#carousel-indicators > button");
-
-  slides.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-  indicators.forEach((indicator, i) => {
-    indicator.classList.toggle("bg-yellow-400", i === currentIndex);
-  });
-}
 
 // Auto-slide every 5 seconds
 setInterval(() => moveCarousel(1), 5000);
