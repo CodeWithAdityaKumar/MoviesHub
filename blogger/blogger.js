@@ -26,7 +26,7 @@ async function fetchLatestPosts() {
             "https://via.placeholder.com/800x400";
         
         const imdb = content.match(/imdb-rating: ([\d.]+)/)?.[1];
-        const imdbId = content.match(/imdb-id: (\d+)/)?.[1];
+        const imdbId = content.match(/imdb-id: ([\d.]+)/)?.[1];
         
         console.log(image, title, link, imdb, imdbId, content);
         
