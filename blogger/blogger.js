@@ -5,7 +5,9 @@ async function fetchLatestPosts() {
   try {
     const response = await fetch(feedUrl);
     const data = await response.json();
-    const posts = data.feed.entry;
+      const posts = data.feed.entry;
+      console.log(posts);
+      
 
     if (!posts) return;
 
