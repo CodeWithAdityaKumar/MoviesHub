@@ -24,12 +24,11 @@ async function fetchLatestPosts() {
                 try {
                     // Fetch movie details directly using TMDB ID
                     const response = await fetch(
-                        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=videos,credits`
+                      `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}`
                     );
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    console.log(response);
+                    
                     
                     const movieDetails = await response.json();
                     console.log('Successfully fetched movie details:', movieDetails);
