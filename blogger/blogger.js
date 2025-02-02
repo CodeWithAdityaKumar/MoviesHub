@@ -59,7 +59,7 @@ function displayCarousel(posts) {
                 ${posts.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
-                    console.log(movieDetails);
+                    console.log(item);
                     
                     const title = post.title.$t;
                     const link = post.link.find(l => l.rel === "alternate").href;
