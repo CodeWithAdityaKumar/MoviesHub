@@ -41,7 +41,7 @@ async function fetchLatestPosts() {
             
             const content = post.content.$t;
             // Match the TMDB ID directly from the blog content
-            const tmdbId = content.match(/tmdb-id:\s*(\d+)/)?.[1];
+            const tmdbId = content.match(/imdb-id:\s*(\d+)/)?.[1];
             console.log('TMDB ID:', tmdbId);
 
             // Fetch movie details using TMDB ID
