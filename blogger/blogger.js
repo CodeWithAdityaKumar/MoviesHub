@@ -15,44 +15,43 @@ async function fetchLatestPosts() {
             return;
         }
 
-        const carouselContainer = document.getElementById('carousel');
         const validPosts = await Promise.all(posts.map(async (post) => {
             const content = post.content.$t;
-            // Updated regex to match IMDB ID more accurately
-            const imdbId = content.match(/imdb-id:\s*([a-zA-Z0-9]+)/)?.[1];
-            console.log('IMDB ID:', imdbId);
+            // Match the TMDB ID directly from the blog content
+            const tmdbId = content.match(/tmdb-id:\s*(\d+)/)?.[1];
             
-            
-            if (imdbId) {
+            if (tmdbId) {
                 try {
-
+                    // Fetch movie details directly using TMDB ID
+                    const response = await fetch(
+                        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=videos,credits`
+                    );
                     
-                    // If movie found, get detailed info
-                        const movieId = findData.movie_results[0].id;
-                        const detailsResponse = await fetch(
-                            `https://api.themoviedb.org/3/movie/${movieId}?api_key=${tmdbApiKey}`
-                        );
-                    const movieDetails = await detailsResponse.json();
-                    console.log('Movie Details:', movieDetails);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     
-                        
-                        return {
-                            post,
-                            movieDetails
-                        };
-
+                    const movieDetails = await response.json();
+                    console.log('Successfully fetched movie details:', movieDetails);
+                    
+                    return {
+                        post,
+                        movieDetails
+                    };
                 } catch (error) {
-                    console.error("Error fetching TMDB data:", error);
+                    console.error("Error fetching TMDB data for ID:", tmdbId, error);
                 }
+            } else {
+                console.log('No TMDB ID found in post:', post.title.$t);
             }
             
-            // Fallback if no movie details found
             return {
                 post,
                 movieDetails: null
             };
         }));
 
+        console.log('Valid posts with movie details:', validPosts);
         displayCarousel(validPosts);
         startCarousel();
     } catch (error) {
