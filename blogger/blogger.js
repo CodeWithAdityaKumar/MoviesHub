@@ -1,9 +1,30 @@
 let currentSlide = 0;
 let carouselInterval;
+const tmdbApiKey = "fed65ec6f5d5d783142e768d6dd811e7";
+
+async function fetchMovieDetails(tmdbId) {
+    try {
+      // Fetch movie details directly using TMDB ID
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}`
+      );
+
+      console.log(response);
+
+      const movieDetails = await response.json();
+      console.log("Successfully fetched movie details:", movieDetails);
+
+      return {
+        movieDetails,
+      };
+    } catch (error) {
+      console.error("Error fetching TMDB data for ID:", tmdbId, error);
+    }
+}
 
 async function fetchLatestPosts() {
     const feedUrl = "https://akmovi4upro.blogspot.com/feeds/posts/default?alt=json&max-results=5";
-    const tmdbApiKey = "fed65ec6f5d5d783142e768d6dd811e7";
+    
 
     try {
         const response = await fetch(feedUrl);
@@ -15,44 +36,43 @@ async function fetchLatestPosts() {
             return;
         }
 
-        const validPosts = await Promise.all(posts.map(async (post) => {
+        posts.forEach(async (post) => {
             const content = post.content.$t;
             // Match the TMDB ID directly from the blog content
             const tmdbId = content.match(/tmdb-id:\s*(\d+)/)?.[1];
-            
-            if (tmdbId) {
-                try {
-                    // Fetch movie details directly using TMDB ID
-                    const response = await fetch(
-                      `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}`
-                    );
-                    
-                    console.log(response);
-                    
-                    
-                    const movieDetails = await response.json();
-                    console.log('Successfully fetched movie details:', movieDetails);
-                    
-                    return {
-                        post,
-                        movieDetails
-                    };
-                } catch (error) {
-                    console.error("Error fetching TMDB data for ID:", tmdbId, error);
-                }
-            } else {
-                console.log('No TMDB ID found in post:', post.title.$t);
-            }
-            
-            return {
-                post,
-                movieDetails: null
-            };
-        }));
 
-        console.log('Valid posts with movie details:', validPosts);
-        displayCarousel(validPosts);
-        startCarousel();
+            // Fetch movie details using TMDB ID
+            const movieDetails = await fetchMovieDetails(tmdbId);
+
+            let validPosts = {
+              post,
+              movieDetails
+            };
+
+            console.log('Valid posts with movie details:', validPosts);
+
+            console.log("Valid posts with movie details:", validPosts);
+            displayCarousel(validPosts);
+            startCarousel();
+
+        })
+
+
+        // const validPosts = await Promise.all(posts.map(async (post) => {
+            
+        //     if (tmdbId) {
+                
+        //     } else {
+        //         console.log('No TMDB ID found in post:', post.title.$t);
+        //     }
+            
+        //     return {
+        //         post,
+        //         movieDetails: null
+        //     };
+        // }));
+
+        
     } catch (error) {
         console.error("Error fetching posts:", error);
         document.getElementById('carousel').style.display = 'none';
