@@ -20,6 +20,8 @@ async function fetchLatestPosts() {
             const content = post.content.$t;
             // Updated regex to match IMDB ID more accurately
             const imdbId = content.match(/imdb-id:\s*([a-zA-Z0-9]+)/)?.[1];
+            console.log('IMDB ID:', imdbId);
+            
             
             if (imdbId) {
                 try {
