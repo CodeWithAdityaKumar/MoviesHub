@@ -29,6 +29,8 @@ async function fetchLatestPosts() {
                     );
                     const tmdbData = await tmdbResponse.json();
                     if (tmdbData.movie_results?.[0]) {
+                        console.log(tmdbData);
+                        
                         return {
                             post,
                             movieDetails: tmdbData.movie_results[0]
