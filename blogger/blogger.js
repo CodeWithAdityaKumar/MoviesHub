@@ -23,7 +23,9 @@ async function fetchLatestPosts() {
             if (imdbId) {
                 try {
                     const tmdbResponse = await fetch(
-                        `https://api.themoviedb.org/3/find/${imdbId}?api_key=${tmdbApiKey}&external_source=imdb_id`
+                        ` https://api.themoviedb.org/3/movie/${imdbId}?api_key=${tmdbApiKey}`
+
+                        
                     );
                     const tmdbData = await tmdbResponse.json();
                     if (tmdbData.movie_results?.[0]) {
