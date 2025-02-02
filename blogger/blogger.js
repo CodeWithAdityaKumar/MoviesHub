@@ -59,6 +59,8 @@ function displayCarousel(posts) {
                 ${posts.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
+                    console.log(movieDetails);
+                    
                     const title = post.title.$t;
                     const link = post.link.find(l => l.rel === "alternate").href;
                     const content = post.content.$t;
@@ -116,7 +118,7 @@ function displayCarousel(posts) {
                                             </span>
                                         </div>
                                         <p class="text-gray-300 text-base md:text-lg mb-6 line-clamp-3 md:line-clamp-4">
-                                            ${movieDetails.overview.substring(0, 150)}...
+                                            ${movieDetails?.overview || content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...
                                         </p>
                                         <div class="flex gap-4">
                                             <a href="${link}" 
