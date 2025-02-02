@@ -79,8 +79,56 @@ function displayCarousel(posts) {
                                 
                                 <!-- Content Container -->
                                 <div class="container mx-auto flex items-center relative z-10">
-                                    <!-- Rest of the content structure remains the same as in main.js -->
-                                    // ...existing code...
+                                    <!-- Poster -->
+                                    <div class="hidden md:block w-1/3 p-6">
+                                        <img src="${movieDetails?.poster_path ? 
+                                            `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}` : 
+                                            defaultImage}"
+                                             alt="${title}"
+                                             class="w-full max-w-[300px] rounded-lg shadow-2xl hover:scale-105 transition-transform duration-300">
+                                    </div>
+                                    
+                                    <!-- Movie Details -->
+                                    <div class="w-full md:w-2/3 p-6 md:p-10">
+                                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">${title}</h2>
+                                        <div class="flex flex-wrap items-center gap-4 mb-4">
+                                            <span class="px-3 py-1 bg-yellow-400 text-black rounded-full text-sm font-semibold">
+                                                ${movieDetails?.vote_average ? movieDetails.vote_average.toFixed(1) : 'N/A'} ★
+                                            </span>
+                                            <span class="text-yellow-400">
+                                                ${movieDetails?.release_date ? 
+                                                    new Date(movieDetails.release_date).toLocaleDateString('en-US', { 
+                                                        year: 'numeric', 
+                                                        month: 'long', 
+                                                        day: 'numeric' 
+                                                    }) : 
+                                                    new Date(post.published.$t).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}
+                                            </span>
+                                            <span class="text-gray-300 text-sm">
+                                                ${movieDetails?.original_language === 'hi' ? '🇮🇳 Bollywood' : 
+                                                  movieDetails?.original_language === 'en' ? '🌟 Hollywood' : 
+                                                  movieDetails?.original_language === 'ta' || movieDetails?.original_language === 'te' ? '🎬 South Indian' : 
+                                                  '🎥 International'}
+                                            </span>
+                                        </div>
+                                        <p class="text-gray-300 text-base md:text-lg mb-6 line-clamp-3 md:line-clamp-4">
+                                            ${movieDetails?.overview || content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...
+                                        </p>
+                                        <div class="flex gap-4">
+                                            <a href="${link}" 
+                                               class="px-6 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-500 transition-colors">
+                                                Watch Now
+                                            </a>
+                                            <button onclick="window.location.href='${link}'"
+                                                    class="px-6 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                                                More Info
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
