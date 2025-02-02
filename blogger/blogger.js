@@ -25,7 +25,6 @@ async function fetchMovieDetails(tmdbId) {
 async function fetchLatestPosts() {
     const feedUrl = "https://akmovi4upro.blogspot.com/feeds/posts/default?alt=json&max-results=5";
     
-
     try {
         const response = await fetch(feedUrl);
         const data = await response.json();
@@ -36,46 +35,33 @@ async function fetchLatestPosts() {
             return;
         }
 
-        posts.forEach(async (post) => {
-            console.log('Post:', post);
-            
+        // Create an array to store all processed posts
+        const processedPosts = [];
+
+        // Process each post and add to array
+        for (const post of posts) {
             const content = post.content.$t;
-            // Match the TMDB ID directly from the blog content
             const tmdbId = content.match(/imdb-id:\s*(\d+)/)?.[1];
-            console.log('TMDB ID:', tmdbId);
-
-            // Fetch movie details using TMDB ID
-            const movieDetails = await fetchMovieDetails(tmdbId);
-
-            let validPosts = {
-              post,
-              movieDetails:movieDetails.movieDetails
-            };
-
-            console.log('Valid posts with movie details:', validPosts);
-
-            console.log("Valid posts with movie details:", validPosts);
-            displayCarousel(validPosts);
-            startCarousel();
-
-        })
-
-
-        // const validPosts = await Promise.all(posts.map(async (post) => {
             
-        //     if (tmdbId) {
-                
-        //     } else {
-        //         console.log('No TMDB ID found in post:', post.title.$t);
-        //     }
-            
-        //     return {
-        //         post,
-        //         movieDetails: null
-        //     };
-        // }));
+            if (tmdbId) {
+                try {
+                    const movieDetails = await fetchMovieDetails(tmdbId);
+                    if (movieDetails) {
+                        processedPosts.push({
+                            post,
+                            movieDetails: movieDetails.movieDetails
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error processing post:', error);
+                }
+            }
+        }
 
-        
+        console.log('Processed posts:', processedPosts);
+        displayCarousel(processedPosts);
+        startCarousel();
+
     } catch (error) {
         console.error("Error fetching posts:", error);
         document.getElementById('carousel').style.display = 'none';
@@ -87,17 +73,14 @@ function displayCarousel(posts) {
     
     carouselContainer.innerHTML = `
         <div class="relative w-full overflow-hidden">
-            <div class="flex transition-transform duration-500" style="width: ${posts.post.length * 100}%">
-                ${posts.post.map((item, index) => {
+            <div class="flex transition-transform duration-500" style="width: ${posts.length * 100}%">
+                ${posts.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
                     const title = post.title.$t;
                     const link = post.link.find(l => l.rel === "alternate").href;
                     const content = post.content.$t;
                     const defaultImage = content.match(/<img.*?src="(.*?)"/)?.[1] || "https://via.placeholder.com/800x400";
-
-                    // Add console log for debugging
-                    console.log('Movie Details:', movieDetails);
 
                     return `
                         <div class="w-full" style="flex: 0 0 ${100/posts.length}%" id="slide-${index}">
