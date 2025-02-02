@@ -18,28 +18,36 @@ async function fetchLatestPosts() {
         const carouselContainer = document.getElementById('carousel');
         const validPosts = await Promise.all(posts.map(async (post) => {
             const content = post.content.$t;
-            const imdbId = content.match(/imdb-id: ([\d.]+)/)?.[1];
+            // Updated regex to match IMDB ID more accurately
+            const imdbId = content.match(/imdb-id:\s*([a-zA-Z0-9]+)/)?.[1];
             
             if (imdbId) {
                 try {
-                    const tmdbResponse = await fetch(
-                        ` https://api.themoviedb.org/3/movie/${imdbId}?api_key=${tmdbApiKey}`
-
-                        
+                    // First, find the TMDB movie using IMDB ID
+                    const findResponse = await fetch(
+                        `https://api.themoviedb.org/3/find/${imdbId}?api_key=${tmdbApiKey}&external_source=imdb_id`
                     );
-                    const tmdbData = await tmdbResponse.json();
-                    if (tmdbData.movie_results?.[0]) {
-                        console.log(tmdbData);
+                    const findData = await findResponse.json();
+                    
+                    // If movie found, get detailed info
+                    if (findData.movie_results && findData.movie_results[0]) {
+                        const movieId = findData.movie_results[0].id;
+                        const detailsResponse = await fetch(
+                            `https://api.themoviedb.org/3/movie/${movieId}?api_key=${tmdbApiKey}`
+                        );
+                        const movieDetails = await detailsResponse.json();
                         
                         return {
                             post,
-                            movieDetails: tmdbData.movie_results[0]
+                            movieDetails
                         };
                     }
                 } catch (error) {
                     console.error("Error fetching TMDB data:", error);
                 }
             }
+            
+            // Fallback if no movie details found
             return {
                 post,
                 movieDetails: null
@@ -63,12 +71,13 @@ function displayCarousel(posts) {
                 ${posts.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
-                    console.log(item);
-                    
                     const title = post.title.$t;
                     const link = post.link.find(l => l.rel === "alternate").href;
                     const content = post.content.$t;
                     const defaultImage = content.match(/<img.*?src="(.*?)"/)?.[1] || "https://via.placeholder.com/800x400";
+
+                    // Add console log for debugging
+                    console.log('Movie Details:', movieDetails);
 
                     return `
                         <div class="w-full" style="flex: 0 0 ${100/posts.length}%" id="slide-${index}">
