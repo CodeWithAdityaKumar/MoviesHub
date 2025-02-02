@@ -10,3 +10,27 @@
     border-radius: 10px;
     border: 1px solid #ddd;
 }
+
+.carousel-slide {
+    transform: translateX(0);
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.loading-indicator {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .loading-indicator {
+        height: 300px;
+    }
+}
