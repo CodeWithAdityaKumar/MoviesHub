@@ -87,8 +87,8 @@ function displayCarousel(posts) {
     
     carouselContainer.innerHTML = `
         <div class="relative w-full overflow-hidden">
-            <div class="flex transition-transform duration-500" style="width: ${posts.length * 100}%">
-                ${posts.map((item, index) => {
+            <div class="flex transition-transform duration-500" style="width: ${posts.post.length * 100}%">
+                ${posts.post.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
                     const title = post.title.$t;
