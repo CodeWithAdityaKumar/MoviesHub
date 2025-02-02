@@ -17,41 +17,39 @@ async function fetchLatestPosts() {
 
         const validPosts = await Promise.all(posts.map(async (post) => {
             const content = post.content.$t;
-            // Match the TMDB ID directly from the blog content
             const tmdbId = content.match(/tmdb-id:\s*(\d+)/)?.[1];
             
             if (tmdbId) {
                 try {
-                    // Fetch movie details directly using TMDB ID
-                    const response = await fetch(
-                        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=videos,credits`
-                    );
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const movieDetails = await response.json();
-                    console.log('Successfully fetched movie details:', movieDetails);
+                    // Fetch multiple data points in parallel like in downloadPage.js
+                    const [movieDetails, videoData, credits] = await Promise.all([
+                        fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}`).then(res => res.json()),
+                        fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos?api_key=${tmdbApiKey}`).then(res => res.json()),
+                        fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/credits?api_key=${tmdbApiKey}`).then(res => res.json())
+                    ]);
+
+                    // Find trailer if available
+                    const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
                     
                     return {
                         post,
-                        movieDetails
+                        movieDetails,
+                        trailer: trailer || null,
+                        credits
                     };
                 } catch (error) {
                     console.error("Error fetching TMDB data for ID:", tmdbId, error);
                 }
-            } else {
-                console.log('No TMDB ID found in post:', post.title.$t);
             }
             
             return {
                 post,
-                movieDetails: null
+                movieDetails: null,
+                trailer: null,
+                credits: null
             };
         }));
 
-        console.log('Valid posts with movie details:', validPosts);
         displayCarousel(validPosts);
         startCarousel();
     } catch (error) {
@@ -69,18 +67,22 @@ function displayCarousel(posts) {
                 ${posts.map((item, index) => {
                     const post = item.post;
                     const movieDetails = item.movieDetails;
+                    const credits = item.credits;
+                    const trailer = item.trailer;
+                    
                     const title = post.title.$t;
                     const link = post.link.find(l => l.rel === "alternate").href;
                     const content = post.content.$t;
                     const defaultImage = content.match(/<img.*?src="(.*?)"/)?.[1] || "https://via.placeholder.com/800x400";
-
-                    // Add console log for debugging
-                    console.log('Movie Details:', movieDetails);
+                    
+                    // Get director info if available
+                    const director = credits?.crew?.find(person => person.job === 'Director')?.name;
+                    // Get first 3 cast members
+                    const cast = credits?.cast?.slice(0, 3)?.map(actor => actor.name)?.join(', ');
 
                     return `
                         <div class="w-full" style="flex: 0 0 ${100/posts.length}%" id="slide-${index}">
                             <div class="relative h-[400px] md:h-[500px] flex">
-                                <!-- Backdrop Image with Overlay -->
                                 <div class="absolute inset-0 z-0">
                                     <img src="${movieDetails?.backdrop_path ? 
                                         `https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}` : 
@@ -90,9 +92,7 @@ function displayCarousel(posts) {
                                     <div class="absolute inset-0 bg-gradient-to-r from-black via-black/95 to-black/50"></div>
                                 </div>
                                 
-                                <!-- Content Container -->
                                 <div class="container mx-auto flex items-center relative z-10">
-                                    <!-- Poster -->
                                     <div class="hidden md:block w-1/3 p-6">
                                         <img src="${movieDetails?.poster_path ? 
                                             `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}` : 
@@ -101,32 +101,24 @@ function displayCarousel(posts) {
                                              class="w-full max-w-[300px] rounded-lg shadow-2xl hover:scale-105 transition-transform duration-300">
                                     </div>
                                     
-                                    <!-- Movie Details -->
                                     <div class="w-full md:w-2/3 p-6 md:p-10">
                                         <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">${title}</h2>
                                         <div class="flex flex-wrap items-center gap-4 mb-4">
-                                            <span class="px-3 py-1 bg-yellow-400 text-black rounded-full text-sm font-semibold">
-                                                ${movieDetails?.vote_average ? movieDetails.vote_average.toFixed(1) : 'N/A'} ★
-                                            </span>
-                                            <span class="text-yellow-400">
-                                                ${movieDetails?.release_date ? 
-                                                    new Date(movieDetails.release_date).toLocaleDateString('en-US', { 
-                                                        year: 'numeric', 
-                                                        month: 'long', 
-                                                        day: 'numeric' 
-                                                    }) : 
-                                                    new Date(post.published.$t).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
-                                            </span>
-                                            <span class="text-gray-300 text-sm">
-                                                ${movieDetails?.original_language === 'hi' ? '🇮🇳 Bollywood' : 
-                                                  movieDetails?.original_language === 'en' ? '🌟 Hollywood' : 
-                                                  movieDetails?.original_language === 'ta' || movieDetails?.original_language === 'te' ? '🎬 South Indian' : 
-                                                  '🎥 International'}
-                                            </span>
+                                            ${movieDetails?.vote_average ? `
+                                                <span class="px-3 py-1 bg-yellow-400 text-black rounded-full text-sm font-semibold">
+                                                    ${movieDetails.vote_average.toFixed(1)} ★ (${movieDetails.vote_count} votes)
+                                                </span>
+                                            ` : ''}
+                                            ${director ? `
+                                                <span class="text-gray-300 text-sm">
+                                                    Director: ${director}
+                                                </span>
+                                            ` : ''}
+                                            ${cast ? `
+                                                <span class="text-gray-300 text-sm">
+                                                    Cast: ${cast}
+                                                </span>
+                                            ` : ''}
                                         </div>
                                         <p class="text-gray-300 text-base md:text-lg mb-6 line-clamp-3 md:line-clamp-4">
                                             ${movieDetails?.overview || content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...
@@ -136,6 +128,13 @@ function displayCarousel(posts) {
                                                class="px-6 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-500 transition-colors">
                                                 Watch Now
                                             </a>
+                                            ${trailer ? `
+                                                <a href="https://www.youtube.com/watch?v=${trailer.key}" 
+                                                   target="_blank"
+                                                   class="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                                                    <i class="fab fa-youtube mr-2"></i>Trailer
+                                                </a>
+                                            ` : ''}
                                             <button onclick="window.location.href='${link}'"
                                                     class="px-6 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
                                                 More Info
