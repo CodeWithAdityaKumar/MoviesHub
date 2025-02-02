@@ -49,7 +49,7 @@ async function fetchLatestPosts() {
 
             let validPosts = {
               post,
-              movieDetails
+              movieDetails:movieDetails.movieDetails
             };
 
             console.log('Valid posts with movie details:', validPosts);
