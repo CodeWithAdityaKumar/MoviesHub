@@ -37,9 +37,12 @@ async function fetchLatestPosts() {
         }
 
         posts.forEach(async (post) => {
+            console.log('Post:', post);
+            
             const content = post.content.$t;
             // Match the TMDB ID directly from the blog content
             const tmdbId = content.match(/tmdb-id:\s*(\d+)/)?.[1];
+            console.log('TMDB ID:', tmdbId);
 
             // Fetch movie details using TMDB ID
             const movieDetails = await fetchMovieDetails(tmdbId);
