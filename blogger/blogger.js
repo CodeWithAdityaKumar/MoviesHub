@@ -25,25 +25,22 @@ async function fetchLatestPosts() {
             
             if (imdbId) {
                 try {
-                    // First, find the TMDB movie using IMDB ID
-                    const findResponse = await fetch(
-                        `https://api.themoviedb.org/3/find/${imdbId}?api_key=${tmdbApiKey}&external_source=imdb_id`
-                    );
-                    const findData = await findResponse.json();
+
                     
                     // If movie found, get detailed info
-                    if (findData.movie_results && findData.movie_results[0]) {
                         const movieId = findData.movie_results[0].id;
                         const detailsResponse = await fetch(
                             `https://api.themoviedb.org/3/movie/${movieId}?api_key=${tmdbApiKey}`
                         );
-                        const movieDetails = await detailsResponse.json();
+                    const movieDetails = await detailsResponse.json();
+                    console.log('Movie Details:', movieDetails);
+                    
                         
                         return {
                             post,
                             movieDetails
                         };
-                    }
+
                 } catch (error) {
                     console.error("Error fetching TMDB data:", error);
                 }
